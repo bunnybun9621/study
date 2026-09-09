@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수능 공부 대시보드</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Pretendard",
+                 "Noto Sans KR", sans-serif;
+    background: #f7f8fc;
+    color: #252525;
+}
+
+button, input, select {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+}
+
+/* 전체 */
+.container {
+    width: min(1200px, 94%);
+    margin: 0 auto;
+    padding: 30px 0 60px;
+}
+
+/* 헤더 */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+.header p {
+    margin: 8px 0 0;
+    color: #888;
+}
+
+/* D-day */
+.dday-box {
+    background: white;
+    border-radius: 24px;
+    padding: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dday-title {
+    color: #888;
+    font-size: 14px;
+}
+
+.dday-number {
+    font-size: 64px;
+    font-weight: 800;
+    margin: 5px 0;
+}
+
+.dday-date {
+    color: #999;
+}
+
+.dday-right {
+    text-align: right;
+}
+
+.dday-right button {
+    background: #222;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 12px;
+}
+
+/* 그리드 */
+.grid {
+    display: grid;
+    grid-template-columns: 1.3fr .7fr;
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 22px;
+    padding: 24px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.05);
+    margin-bottom: 20px;
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 20px;
+}
+
+/* 달력 */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.calendar-header button {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #f0f1f5;
+}
+
+.calendar-title {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.weekdays,
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.weekdays div {
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    padding-bottom: 10px;
+}
+
+.day {
+    min-height: 85px;
+    border: 1px solid #f0f0f0;
+    padding: 7px;
+    cursor: pointer;
+    position: relative;
+    transition: .15s;
+}
+
+.day:hover {
+    background: #fafafa;
+}
+
+.day-number {
+    font-size: 13px;
+}
+
+.today {
+    background: #f3f5ff;
+}
+
+.selected {
+    outline: 2px solid #555;
+    outline-offset: -2px;
+}
+
+.event-dot {
+    margin-top: 8px;
+    background: #222;
+    color: white;
+    border-radius: 7px;
+    padding: 4px;
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dday-event {
+    background: #e8e0ff;
+    color: #5c3ca8;
+}
+
+/* 일정 */
+.event-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.event-form input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.event-form button {
+    background: #222;
+    color: white;
+    padding: 0 16px;
+    border-radius: 10px;
+}
+
+.event-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f7f7f9;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+}
+
+.event-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.event-name {
+    font-weight: 600;
+}
+
+.event-date {
+    font-size: 12px;
+    color: #999;
+}
+
+.delete {
+    background: none;
+    color: #aaa;
+}
+
+/* 타이머 */
+.timer {
+    text-align: center;
+}
+
+.timer-subject {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.timer-mode {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    margin-bottom: 15px;
+}
+
+.timer-mode button {
+    padding: 8px 13px;
+    background: #f0f0f2;
+    border-radius: 10px;
+}
+
+.timer-mode button.active {
+    background: #222;
+    color: white;
+}
+
+.time {
+    font-size: 58px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin: 15px 0;
+}
+
+.timer-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.timer-buttons button {
+    padding: 12px 18px;
+    border-radius: 12px;
+}
+
+.start {
+    background: #222;
+    color: white;
+}
+
+.reset {
+    background: #eee;
+}
+
+/* 통계 */
+.stat-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-time {
+    font-size: 34px;
+    font-weight: 800;
+}
+
+.subject-stat {
+    margin-top: 18px;
+}
+
+.subject-row {
+    margin-bottom: 12px;
+}
+
+.subject-name {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.bar {
+    height: 8px;
+    background: #eee;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.bar-inner {
+    height: 100%;
+    background: #333;
+    border-radius: 20px;
+}
+
+/* 체크리스트 */
+.check-input {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.check-input input {
+    flex: 1;
+    padding: 11px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.check-input button {
+    background: #222;
+    color: white;
+    padding: 0 15px;
+    border-radius: 10px;
+}
+
+.check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.check-item label {
+    flex: 1;
+}
+
+.completed {
+    text-decoration: line-through;
+    color: #aaa;
+}
+
+@media(max-width: 850px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dday-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .dday-right {
+        text-align: left;
+    }
+
+    .day {
+        min-height: 60px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="header">
+        <div>
+            <h1>STUDY DASHBOARD</h1>
+            <p>수능까지 차근차근.</p>
+        </div>
+    </header>
+
+    <!-- 수능 D-Day -->
+    <section class="dday-box">
+        <div>
+            <div class="dday-title">2027학년도 대학수학능력시험</div>
+            <div class="dday-number" id="csatDday">D-0</div>
+            <div class="dday-date">2026.11.19</div>
+        </div>
+
+        <div class="dday-right">
+            <div>오늘의 공부도 기록하기</div>
+            <button onclick="scrollToTimer()">공부 시작 →</button>
+        </div>
+    </section>
+
+
+    <div class="grid">
+
+        <!-- 왼쪽 -->
+        <div>
+
+            <!-- 달력 -->
+            <section class="card">
+
+                <div class="calendar-header">
+                    <button onclick="changeMonth(-1)">‹</button>
+                    <div class="calendar-title" id="calendarTitle"></div>
+                    <button onclick="changeMonth(1)">›</button>
+                </div>
+
+                <div class="weekdays">
+                    <div>일</div>
+                    <div>월</div>
+                    <div>화</div>
+                    <div>수</div>
+                    <div>목</div>
+                    <div>금</div>
+                    <div>토</div>
+                </div>
+
+                <div class="calendar" id="calendar"></div>
+
+            </section>
+
+
+            <!-- 선택 날짜 일정 -->
+            <section class="card">
+
+                <h2 id="selectedDateTitle">날짜를 선택하세요</h2>
+
+                <div class="event-form">
+                    <input
+                        id="eventInput"
+                        placeholder="예: 수학 미적분 문제집 30쪽"
+                    >
+                    <button onclick="addEvent()">추가</button>
+                </div>
+
+                <div id="eventList"></div>
+
+            </section>
+
+
+            <!-- 체크리스트 -->
+            <section class="card">
+
+                <h2>오늘의 체크리스트</h2>
+
+                <div class="check-input">
+                    <input
+                        id="checkInput"
+                        placeholder="오늘 할 일을 입력하세요"
+                    >
+                    <button onclick="addChecklist()">추가</button>
+                </div>
+
+                <div id="checkList"></div>
+
+            </section>
+
+        </div>
+
+
+        <!-- 오른쪽 -->
+        <div>
+
+            <!-- 타이머 -->
+            <section class="card timer" id="timerCard">
+
+                <h2>공부 타이머</h2>
+
+                <select id="subject" class="timer-subject">
+                    <option value="국어">국어</option>
+                    <option value="수학">수학</option>
+                    <option value="영어">영어</option>
+                    <option value="탐구">탐구</option>
+                    <option value="기타">기타</option>
+                </select>
+
+                <div class="timer-mode">
+                    <button
+                        id="studyMode"
+                        class="active"
+                        onclick="setMode('study')"
+                    >
+                        공부
+                    </button>
+
+                    <button
+                        id="breakMode"
+                        onclick="setMode('break')"
+                    >
+                        휴식
+                    </button>
+                </div>
+
+                <div class="time" id="timer">00:00:00</div>
+
+                <div class="timer-buttons">
+                    <button class="start" onclick="toggleTimer()" id="startButton">
+                        시작
+                    </button>
+
+                    <button class="reset" onclick="resetTimer()">
+                        리셋
+                    </button>
+                </div>
+
+            </section>
+
+
+            <!-- 오늘 공부 -->
+            <section class="card">
+
+                <h2>오늘 공부 기록</h2>
+
+                <div class="stat-main">
+                    <div>
+                        <div class="dday-title">오늘 공부한 시간</div>
+                        <div class="total-time" id="todayTotal">
+                            00:00
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subject-stat" id="todaySubjects"></div>
+
+            </section>
+
+
+            <!-- 수능까지 총 공부 -->
+            <section class="card">
+
+                <h2>수능까지 총 공부</h2>
+
+                <div class="dday-title">
+                    지금까지 기록한 공부 시간
+                </div>
+
+                <div class="total-time" id="allTotal">
+                    00:00
+                </div>
+
+                <div class="subject-stat" id="allSubjects"></div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   기본 설정
+========================= */
+
+const CSAT_DATE = new Date("2026-11-19T00:00:00");
+
+const subjects = [
+    "국어",
+    "수학",
+    "영어",
+    "탐구",
+    "기타"
+];
+
+let currentDate = new Date();
+currentDate.setDate(1);
+
+let selectedDate = getDateKey(new Date());
+
+let timerSeconds = 0;
+let timerRunning = false;
+let timerInterval = null;
+
+let timerMode = "study";
+
+
+/* =========================
+   저장 데이터
+========================= */
+
+let events = JSON.parse(
+    localStorage.getItem("studyEvents") || "{}"
+);
+
+let studyRecords = JSON.parse(
+    localStorage.getItem("studyRecords") || "{}"
+);
+
+let checklist = JSON.parse(
+    localStorage.getItem("studyChecklist") || "{}"
+);
+
+
+/* =========================
+   날짜 함수
+========================= */
+
+function getDateKey(date) {
+    return date.getFullYear() + "-" +
+        String(date.getMonth() + 1).padStart(2, "0") + "-" +
+        String(date.getDate()).padStart(2, "0");
+}
+
+
+function formatDate(dateKey) {
+    const [y, m, d] = dateKey.split("-");
+
+    return `${y}.${m}.${d}`;
+}
+
+
+/* =========================
+   D-Day
+========================= */
+
+function updateDday() {
+
+    const today = new Date();
+
+    today.setHours(0,0,0,0);
+
+    const diff =
+        Math.ceil(
+            (CSAT_DATE - today) /
+            (1000 * 60 * 60 * 24)
+        );
+
+    const element =
+        document.getElementById("csatDday");
+
+    if (diff > 0) {
+        element.textContent = `D-${diff}`;
+    } else if (diff === 0) {
+        element.textContent = "D-DAY";
+    } else {
+        element.textContent = `D+${Math.abs(diff)}`;
+    }
+}
+
+
+/* =========================
+   달력
+========================= */
+
+function renderCalendar() {
+
+    const calendar =
+        document.getElementById("calendar");
+
+    calendar.innerHTML = "";
+
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+
+    document.getElementById("calendarTitle")
+        .textContent =
+        `${year}년 ${month + 1}월`;
+
+    const firstDay =
+        new Date(year, month, 1).getDay();
+
+    const lastDate =
+        new Date(year, month + 1, 0).getDate();
+
+    for (let i = 0; i < firstDay; i++) {
+
+        const empty = document.createElement("div");
+
+        empty.className = "day";
+
+        calendar.appendChild(empty);
+    }
+
+
+    for (let day = 1; day <= lastDate; day++) {
+
+        const date =
+            new Date(year, month, day);
+
+        const key =
+            getDateKey(date);
+
+        const div =
+            document.createElement("div");
+
+        div.className = "day";
+
+        if (key === getDateKey(new Date())) {
+            div.classList.add("today");
+        }
+
+        if (key === selectedDate) {
+            div.classList.add("selected");
+        }
+
+        div.innerHTML =
+            `<div class="day-number">${day}</div>`;
+
+
+        /* 수능 D-Day */
+
+        if (key === "2026-11-19") {
+
+            div.innerHTML +=
+                `<div class="event-dot dday-event">
+                    수능 D-DAY
+                </div>`;
+        }
+
+
+        /* 일정 표시 */
+
+        if (events[key]) {
+
+            events[key].forEach(event => {
+
+                const eventDiv =
+                    document.createElement("div");
+
+                eventDiv.className =
+                    "event-dot";
+
+                eventDiv.textContent =
+                    event.name;
+
+                div.appendChild(eventDiv);
+            });
+        }
+
+
+        div.onclick = () => {
+
+            selectedDate = key;
+
+            renderCalendar();
+            renderEvents();
+            renderChecklist();
+        };
+
+        calendar.appendChild(div);
+    }
+}
+
+
+function changeMonth(amount) {
+
+    currentDate.setMonth(
+        currentDate.getMonth() + amount
+    );
+
+    renderCalendar();
+}
+
+
+/* =========================
+   일정
+========================= */
+
+function addEvent() {
+
+    const input =
+        document.getElementById("eventInput");
+
+    const name =
+        input.value.trim();
+
+    if (!name) return;
+
+    if (!events[selectedDate]) {
+        events[selectedDate] = [];
+    }
+
+    events[selectedDate].push({
+        name: name
+    });
+
+    localStorage.setItem(
+        "studyEvents",
+        JSON.stringify(events)
+    );
+
+    input.value = "";
+
+    renderCalendar();
+    renderEvents();
+}
+
+
+function deleteEvent(index) {
+
+    events[selectedDate].splice(index, 1);
+
+    if (events[selectedDate].length === 0) {
+        delete events[selectedDate];
+    }
+
+    localStorage.setItem(
+        "studyEvents",
+        JSON.stringify(events)
+    );
+
+    renderCalendar();
+    renderEvents();
+}
+
+
+function renderEvents() {
+
+    document.getElementById(
+        "selectedDateTitle"
+    ).textContent =
+        `${formatDate(selectedDate)} 일정`;
+
+    const list =
+        document.getElementById("eventList");
+
+    list.innerHTML = "";
+
+    const dayEvents =
+        events[selectedDate] || [];
+
+    if (dayEvents.length === 0) {
+
+        list.innerHTML =
+            `<div style="color:#aaa">
+                등록된 일정이 없어요.
+            </div>`;
+
+        return;
+    }
+
+
+    dayEvents.forEach((event, index) => {
+
+        const div =
+            document.createElement("div");
+
+        div.className = "event-item";
+
+        div.innerHTML = `
+            <div class="event-info">
+                <div class="event-name">
+                    ${escapeHtml(event.name)}
+                </div>
+                <div class="event-date">
+                    ${formatDate(selectedDate)}
+                </div>
+            </div>
+
+            <button
+                class="delete"
+                onclick="deleteEvent(${index})"
+            >
+                ×
+            </button>
+        `;
+
+        list.appendChild(div);
+    });
+}
+
+
+/* =========================
+   체크리스트
+========================= */
+
+function addChecklist() {
+
+    const input =
+        document.getElementById("checkInput");
+
+    const text =
+        input.value.trim();
+
+    if (!text) return;
+
+    if (!checklist[selectedDate]) {
+        checklist[selectedDate] = [];
+    }
+
+    checklist[selectedDate].push({
+        text: text,
+        done: false
+    });
+
+    localStorage.setItem(
+        "studyChecklist",
+        JSON.stringify(checklist)
+    );
+
+    input.value = "";
+
+    renderChecklist();
+}
+
+
+function toggleChecklist(index) {
+
+    checklist[selectedDate][index].done =
+        !checklist[selectedDate][index].done;
+
+    localStorage.setItem(
+        "studyChecklist",
+        JSON.stringify(checklist)
+    );
+
+    renderChecklist();
+}
+
+
+function deleteChecklist(index) {
+
+    checklist[selectedDate].splice(index, 1);
+
+    localStorage.setItem(
+        "studyChecklist",
+        JSON.stringify(checklist)
+    );
+
+    renderChecklist();
+}
+
+
+function renderChecklist() {
+
+    const list =
+        document.getElementById("checkList");
+
+    list.innerHTML = "";
+
+    const items =
+        checklist[selectedDate] || [];
+
+    if (items.length === 0) {
+
+        list.innerHTML =
+            `<div style="color:#aaa">
+                오늘 할 일을 추가해보세요.
+            </div>`;
+
+        return;
+    }
+
+
+    items.forEach((item, index) => {
+
+        const div =
+            document.createElement("div");
+
+        div.className = "check-item";
+
+        div.innerHTML = `
+            <input
+                type="checkbox"
+                ${item.done ? "checked" : ""}
+                onchange="toggleChecklist(${index})"
+            >
+
+            <label
+                class="${item.done ? "completed" : ""}"
+            >
+                ${escapeHtml(item.text)}
+            </label>
+
+            <button
+                class="delete"
+                onclick="deleteChecklist(${index})"
+            >
+                ×
+            </button>
+        `;
+
+        list.appendChild(div);
+    });
+}
+
+
+/* =========================
+   타이머
+========================= */
+
+function setMode(mode) {
+
+    timerMode = mode;
+
+    document
+        .getElementById("studyMode")
+        .classList.toggle(
+            "active",
+            mode === "study"
+        );
+
+    document
+        .getElementById("breakMode")
+        .classList.toggle(
+            "active",
+            mode === "break"
+        );
+}
+
+
+function toggleTimer() {
+
+    if (timerRunning) {
+
+        stopTimer();
+
+    } else {
+
+        startTimer();
+    }
+}
+
+
+function startTimer() {
+
+    timerRunning = true;
+
+    document.getElementById(
+        "startButton"
+    ).textContent = "일시정지";
+
+
+    timerInterval =
+        setInterval(() => {
+
+            timerSeconds++;
+
+            updateTimerDisplay();
+
+        }, 1000);
+}
+
+
+function stopTimer() {
+
+    timerRunning = false;
+
+    clearInterval(timerInterval);
+
+    document.getElementById(
+        "startButton"
+    ).textContent = "시작";
+
+    saveTimerRecord();
+}
+
+
+function resetTimer() {
+
+    if (timerRunning) {
+        stopTimer();
+    }
+
+    timerSeconds = 0;
+
+    updateTimerDisplay();
+}
+
+
+function updateTimerDisplay() {
+
+    const hours =
+        Math.floor(timerSeconds / 3600);
+
+    const minutes =
+        Math.floor(
+            (timerSeconds % 3600) / 60
+        );
+
+    const seconds =
+        timerSeconds % 60;
+
+    document.getElementById(
+        "timer"
+    ).textContent =
+        `${String(hours).padStart(2,"0")}:` +
+        `${String(minutes).padStart(2,"0")}:` +
+        `${String(seconds).padStart(2,"0")}`;
+}
+
+
+/* =========================
+   공부 기록 저장
+========================= */
+
+function saveTimerRecord() {
+
+    if (timerSeconds <= 0) return;
+
+    if (timerMode !== "study") {
+
+        timerSeconds = 0;
+
+        return;
+    }
+
+    const subject =
+        document.getElementById("subject").value;
+
+    const today =
+        getDateKey(new Date());
+
+    if (!studyRecords[today]) {
+
+        studyRecords[today] = {};
+
+        subjects.forEach(s => {
+            studyRecords[today][s] = 0;
+        });
+    }
+
+    studyRecords[today][subject] +=
+        timerSeconds;
+
+    localStorage.setItem(
+        "studyRecords",
+        JSON.stringify(studyRecords)
+    );
+
+    timerSeconds = 0;
+
+    updateTimerDisplay();
+
+    renderStats();
+}
+
+
+/* =========================
+   통계
+========================= */
+
+function formatSeconds(seconds) {
+
+    const hours =
+        Math.floor(seconds / 3600);
+
+    const minutes =
+        Math.floor(
+            (seconds % 3600) / 60
+        );
+
+    return `${hours}시간 ${minutes}분`;
+}
+
+
+function renderStats() {
+
+    const today =
+        getDateKey(new Date());
+
+    let todayTotal = 0;
+
+    let allTotal = 0;
+
+    const todayData =
+        studyRecords[today] || {};
+
+
+    subjects.forEach(subject => {
+
+        todayTotal +=
+            todayData[subject] || 0;
+    });
+
+
+    Object.values(studyRecords)
+        .forEach(day => {
+
+            subjects.forEach(subject => {
+
+                allTotal +=
+                    day[subject] || 0;
+            });
+        });
+
+
+    document.getElementById(
+        "todayTotal"
+    ).textContent =
+        formatSeconds(todayTotal);
+
+    document.getElementById(
+        "allTotal"
+    ).textContent =
+        formatSeconds(allTotal);
+
+
+    renderSubjectStats(
+        "todaySubjects",
+        todayData,
+        todayTotal
+    );
+
+
+    const allData = {};
+
+    subjects.forEach(subject => {
+
+        allData[subject] = 0;
+
+        Object.values(studyRecords)
+            .forEach(day => {
+
+                allData[subject] +=
+                    day[subject] || 0;
+            });
+    });
+
+
+    renderSubjectStats(
+        "allSubjects",
+        allData,
+        allTotal
+    );
+}
+
+
+function renderSubjectStats(
+    elementId,
+    data,
+    total
+) {
+
+    const container =
+        document.getElementById(elementId);
+
+    container.innerHTML = "";
+
+    subjects.forEach(subject => {
+
+        const value =
+            data[subject] || 0;
+
+        const percent =
+            total > 0
+                ? (value / total) * 100
+                : 0;
+
+        const row =
+            document.createElement("div");
+
+        row.className =
+            "subject-row";
+
+        row.innerHTML = `
+            <div class="subject-name">
+                <span>${subject}</span>
+                <span>${formatSeconds(value)}</span>
+            </div>
+
+            <div class="bar">
+                <div
+                    class="bar-inner"
+                    style="width:${percent}%"
+                ></div>
+            </div>
+        `;
+
+        container.appendChild(row);
+    });
+}
+
+
+/* =========================
+   기타
+========================= */
+
+function scrollToTimer() {
+
+    document.getElementById(
+        "timerCard"
+    ).scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+
+function escapeHtml(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+}
+
+
+/* =========================
+   시작
+========================= */
+
+updateDday();
+
+renderCalendar();
+
+renderEvents();
+
+renderChecklist();
+
+renderStats();
+
+updateTimerDisplay();
+
+</script>
+
+</body>
+  </html>
