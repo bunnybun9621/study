@@ -3,579 +3,1292 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>수능 공부 대시보드</title>
+<title>CSAT STUDY DASHBOARD</title>
 
 <style>
-* {
-    box-sizing: border-box;
+:root{
+  --bg:#f5f4f8;
+  --card:#fff;
+  --text:#25232b;
+  --muted:#92909a;
+  --line:#eceaf0;
+  --accent:#7c63d8;
+  --soft:#f0ecff;
+  --shadow:0 10px 35px rgba(35,30,55,.07);
 }
 
-body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Pretendard",
-                 "Noto Sans KR", sans-serif;
-    background: #f7f8fc;
-    color: #252525;
+*{
+  box-sizing:border-box;
 }
 
-button, input, select {
-    font-family: inherit;
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,
+  "Pretendard","Noto Sans KR",sans-serif;
 }
 
-button {
-    cursor: pointer;
-    border: none;
+button,
+input,
+select{
+  font:inherit;
 }
 
-/* 전체 */
-.container {
-    width: min(1200px, 94%);
-    margin: 0 auto;
-    padding: 30px 0 60px;
+button{
+  cursor:pointer;
 }
 
-/* 헤더 */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 25px;
+.app{
+  width:min(1500px,96vw);
+  height:100vh;
+  min-height:720px;
+  margin:auto;
+  padding:18px 0;
+
+  display:grid;
+  grid-template-rows:auto 1fr;
+  gap:14px;
 }
 
-.header h1 {
-    margin: 0;
-    font-size: 30px;
+/* =========================
+   상단
+========================= */
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
 
-.header p {
-    margin: 8px 0 0;
-    color: #888;
+.brand h1{
+  font-size:21px;
+  margin:0;
+  font-weight:850;
+  letter-spacing:-.5px;
 }
 
-/* D-day */
-.dday-box {
-    background: white;
-    border-radius: 24px;
-    padding: 30px;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 30px rgba(0,0,0,.05);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.brand p{
+  margin:3px 0 0;
+  color:var(--muted);
+  font-size:12px;
 }
 
-.dday-title {
-    color: #888;
-    font-size: 14px;
+.dday{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background:var(--card);
+  padding:10px 16px;
+  border-radius:16px;
+  box-shadow:var(--shadow);
 }
 
-.dday-number {
-    font-size: 64px;
-    font-weight: 800;
-    margin: 5px 0;
+.dday .label{
+  font-size:11px;
+  color:var(--muted);
 }
 
-.dday-date {
-    color: #999;
+.dday strong{
+  font-size:28px;
+  line-height:1;
 }
 
-.dday-right {
-    text-align: right;
+.dday small{
+  font-size:11px;
+  color:var(--muted);
 }
 
-.dday-right button {
-    background: #222;
-    color: white;
-    padding: 12px 18px;
-    border-radius: 12px;
+/* =========================
+   전체 레이아웃
+========================= */
+
+.layout{
+  min-height:0;
+
+  display:grid;
+
+  /*
+    왼쪽 = 타이머
+    가운데 = 타임라인
+    오른쪽 = 캘린더
+  */
+  grid-template-columns:
+    310px
+    minmax(380px,1fr)
+    410px;
+
+  gap:14px;
 }
 
-/* 그리드 */
-.grid {
-    display: grid;
-    grid-template-columns: 1.3fr .7fr;
-    gap: 20px;
+.col{
+  min-height:0;
+
+  display:flex;
+  flex-direction:column;
+
+  gap:14px;
 }
 
-.card {
-    background: white;
-    border-radius: 22px;
-    padding: 24px;
-    box-shadow: 0 8px 30px rgba(0,0,0,.05);
-    margin-bottom: 20px;
+.card{
+  background:var(--card);
+  border-radius:20px;
+  box-shadow:var(--shadow);
+  padding:16px;
+  min-height:0;
 }
 
-.card h2 {
-    margin-top: 0;
-    font-size: 20px;
+.card h2{
+  font-size:15px;
+  margin:0 0 12px;
 }
 
-/* 달력 */
-.calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 18px;
+/* =========================
+   타이머
+========================= */
+
+.timer-card{
+  flex:0 0 auto;
+  text-align:center;
 }
 
-.calendar-header button {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: #f0f1f5;
+.subject{
+  width:100%;
+
+  border:1px solid var(--line);
+  background:#fafafd;
+
+  border-radius:10px;
+
+  padding:9px;
+
+  margin-bottom:9px;
 }
 
-.calendar-title {
-    font-size: 20px;
-    font-weight: 700;
+.timer{
+  font-size:48px;
+  font-weight:850;
+  letter-spacing:1px;
+
+  margin:10px 0 12px;
 }
 
-.weekdays,
-.calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
+.timer-btns{
+  display:flex;
+  gap:7px;
+  justify-content:center;
 }
 
-.weekdays div {
-    text-align: center;
-    font-size: 12px;
-    color: #999;
-    padding-bottom: 10px;
+.timer-btns button,
+.primary{
+  border:0;
+  border-radius:10px;
+  padding:9px 14px;
 }
 
-.day {
-    min-height: 85px;
-    border: 1px solid #f0f0f0;
-    padding: 7px;
-    cursor: pointer;
-    position: relative;
-    transition: .15s;
+.start{
+  background:#24222a;
+  color:#fff;
 }
 
-.day:hover {
-    background: #fafafa;
+.reset{
+  background:#eeeef2;
+  color:#444;
 }
 
-.day-number {
-    font-size: 13px;
+.timer-note{
+  font-size:10px;
+  color:var(--muted);
+
+  margin-top:8px;
 }
 
-.today {
-    background: #f3f5ff;
+/* =========================
+   공부시간 통계
+========================= */
+
+.stats{
+  flex:1;
+  overflow:auto;
 }
 
-.selected {
-    outline: 2px solid #555;
-    outline-offset: -2px;
+.stat-total{
+  font-size:27px;
+  font-weight:850;
+  margin-bottom:10px;
 }
 
-.event-dot {
-    margin-top: 8px;
-    background: #222;
-    color: white;
-    border-radius: 7px;
-    padding: 4px;
-    font-size: 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.subject-row{
+  margin:9px 0;
 }
 
-.dday-event {
-    background: #e8e0ff;
-    color: #5c3ca8;
+.subject-head{
+  display:flex;
+  justify-content:space-between;
+
+  font-size:11px;
+
+  margin-bottom:4px;
 }
 
-/* 일정 */
-.event-form {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 15px;
+.bar{
+  height:6px;
+
+  background:#eeeef2;
+
+  border-radius:99px;
+
+  overflow:hidden;
 }
 
-.event-form input {
-    flex: 1;
-    min-width: 0;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
+.bar i{
+  display:block;
+
+  height:100%;
+
+  background:#8a73df;
+
+  border-radius:99px;
 }
 
-.event-form button {
-    background: #222;
-    color: white;
-    padding: 0 16px;
-    border-radius: 10px;
+/* =========================
+   타임라인
+========================= */
+
+.timeline-card{
+  flex:1;
+
+  display:flex;
+  flex-direction:column;
+
+  min-height:0;
 }
 
-.event-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #f7f7f9;
-    padding: 12px;
-    border-radius: 12px;
-    margin-bottom: 8px;
+.timeline-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-.event-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+.date-big{
+  font-size:15px;
+  font-weight:850;
 }
 
-.event-name {
-    font-weight: 600;
+.date-big small{
+  font-size:10px;
+  color:var(--muted);
+  font-weight:500;
 }
 
-.event-date {
-    font-size: 12px;
-    color: #999;
+.timeline{
+  position:relative;
+
+  flex:1;
+
+  min-height:0;
+
+  overflow:auto;
+
+  padding:5px 0 0;
 }
 
-.delete {
-    background: none;
-    color: #aaa;
+.timeline-row{
+  display:grid;
+
+  grid-template-columns:52px 1fr;
+
+  min-height:54px;
+
+  border-bottom:1px solid #f1eff3;
 }
 
-/* 타이머 */
-.timer {
-    text-align: center;
+.t-label{
+  font-size:9px;
+  color:#aaa;
+
+  padding-top:7px;
 }
 
-.timer-subject {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    margin-bottom: 15px;
+.track{
+  position:relative;
+
+  background:
+    repeating-linear-gradient(
+      to right,
+      transparent 0,
+      transparent calc(4.166% - 1px),
+      #f4f2f6 calc(4.166% - 1px),
+      #f4f2f6 4.166%
+    );
 }
 
-.timer-mode {
-    display: flex;
-    justify-content: center;
-    gap: 7px;
-    margin-bottom: 15px;
+.session{
+  position:absolute;
+
+  top:10px;
+
+  height:34px;
+
+  border-radius:7px;
+
+  padding:4px 6px;
+
+  font-size:9px;
+
+  overflow:hidden;
+
+  white-space:nowrap;
+
+  text-overflow:ellipsis;
+
+  background:#8a73df;
+
+  color:#fff;
+
+  box-shadow:
+    0 3px 8px rgba(70,50,120,.12);
 }
 
-.timer-mode button {
-    padding: 8px 13px;
-    background: #f0f0f2;
-    border-radius: 10px;
+.empty-timeline{
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  height:100%;
+
+  color:#aaa;
+
+  font-size:12px;
 }
 
-.timer-mode button.active {
-    background: #222;
-    color: white;
+/* =========================
+   캘린더
+========================= */
+
+.month-card{
+  display:flex;
+  flex-direction:column;
+
+  min-height:0;
+
+  flex:1;
 }
 
-.time {
-    font-size: 58px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    margin: 15px 0;
+.cal-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  margin-bottom:10px;
 }
 
-.timer-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
+.cal-head button{
+  width:30px;
+  height:30px;
+
+  border:0;
+
+  border-radius:9px;
+
+  background:#f0eff3;
 }
 
-.timer-buttons button {
-    padding: 12px 18px;
-    border-radius: 12px;
+.month{
+  font-weight:800;
+  font-size:15px;
 }
 
-.start {
-    background: #222;
-    color: white;
+.week{
+  display:grid;
+
+  grid-template-columns:
+    repeat(7,1fr);
+
+  font-size:10px;
+
+  color:#aaa;
+
+  text-align:center;
+
+  margin-bottom:4px;
 }
 
-.reset {
-    background: #eee;
+.calendar{
+  display:grid;
+
+  grid-template-columns:
+    repeat(7,1fr);
+
+  grid-auto-rows:
+    minmax(62px,1fr);
+
+  min-height:0;
+
+  flex:1;
 }
 
-/* 통계 */
-.stat-main {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.day{
+  border:1px solid #f1eff3;
+
+  padding:5px;
+
+  position:relative;
+
+  cursor:pointer;
+
+  overflow:hidden;
 }
 
-.total-time {
-    font-size: 34px;
-    font-weight: 800;
+.day:hover{
+  background:#faf9fd;
 }
 
-.subject-stat {
-    margin-top: 18px;
+.day.empty{
+  background:#fbfafc;
+
+  cursor:default;
 }
 
-.subject-row {
-    margin-bottom: 12px;
+.day-num{
+  font-size:11px;
 }
 
-.subject-name {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    margin-bottom: 5px;
+.day.today .day-num{
+  display:inline-flex;
+
+  width:22px;
+  height:22px;
+
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  background:#25232b;
+
+  color:#fff;
 }
 
-.bar {
-    height: 8px;
-    background: #eee;
-    border-radius: 20px;
-    overflow: hidden;
+.day.selected{
+  box-shadow:
+    inset 0 0 0 2px #8a73df;
 }
 
-.bar-inner {
-    height: 100%;
-    background: #333;
-    border-radius: 20px;
+.day .mini{
+  display:block;
+
+  margin-top:4px;
+
+  font-size:8px;
+
+  white-space:nowrap;
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+
+  background:#f0ecff;
+
+  color:#684fbc;
+
+  padding:3px 4px;
+
+  border-radius:5px;
 }
 
-/* 체크리스트 */
-.check-input {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 15px;
+.day .mini.dday{
+  background:#25232b;
+
+  color:#fff;
 }
 
-.check-input input {
-    flex: 1;
-    padding: 11px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
+.day .study-min{
+  position:absolute;
+
+  right:4px;
+  bottom:4px;
+
+  font-size:8px;
+
+  color:#888;
 }
 
-.check-input button {
-    background: #222;
-    color: white;
-    padding: 0 15px;
-    border-radius: 10px;
+/* =========================
+   할 일
+========================= */
+
+.tasks-card{
+  display:flex;
+  flex-direction:column;
+
+  min-height:0;
+
+  flex:1;
 }
 
-.check-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 11px 0;
-    border-bottom: 1px solid #eee;
+.selected-title{
+  font-weight:800;
+
+  font-size:13px;
 }
 
-.check-item label {
-    flex: 1;
+.task-form{
+  display:flex;
+
+  gap:6px;
+
+  margin-bottom:8px;
 }
 
-.completed {
-    text-decoration: line-through;
-    color: #aaa;
+.task-form input{
+  flex:1;
+
+  min-width:0;
+
+  border:1px solid var(--line);
+
+  border-radius:9px;
+
+  padding:8px;
 }
 
-@media(max-width: 850px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
+.task-form button,
+.small-btn{
+  background:#25232b;
 
-    .dday-box {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 20px;
-    }
+  color:#fff;
 
-    .dday-right {
-        text-align: left;
-    }
+  border:0;
 
-    .day {
-        min-height: 60px;
-    }
+  border-radius:9px;
+
+  padding:8px 10px;
+
+  font-size:11px;
+}
+
+.task-list{
+  overflow:auto;
+
+  min-height:60px;
+}
+
+.task{
+  display:flex;
+
+  align-items:center;
+
+  gap:7px;
+
+  padding:7px 0;
+
+  border-bottom:1px solid var(--line);
+
+  font-size:11px;
+}
+
+.task label{
+  flex:1;
+}
+
+.done{
+  text-decoration:line-through;
+
+  color:#aaa;
+}
+
+.x{
+  background:none;
+
+  border:0;
+
+  color:#aaa;
+
+  font-size:16px;
+}
+
+/* =========================
+   요일별 반복 할 일
+========================= */
+
+.weekly{
+  margin-top:10px;
+
+  border-top:1px solid var(--line);
+
+  padding-top:10px;
+}
+
+.weekly-title{
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  font-size:11px;
+
+  font-weight:800;
+
+  margin-bottom:7px;
+}
+
+.week-pills{
+  display:grid;
+
+  grid-template-columns:
+    repeat(7,1fr);
+
+  gap:4px;
+}
+
+.week-pills button{
+  border:1px solid var(--line);
+
+  background:#fafafd;
+
+  border-radius:7px;
+
+  padding:6px 0;
+
+  font-size:9px;
+}
+
+.week-pills button.active{
+  background:#25232b;
+
+  color:#fff;
+}
+
+.weekly-form{
+  display:flex;
+
+  gap:5px;
+
+  margin-top:7px;
+}
+
+.weekly-form input{
+  flex:1;
+
+  border:1px solid var(--line);
+
+  border-radius:8px;
+
+  padding:7px;
+
+  font-size:10px;
+}
+
+.weekly-form button{
+  border:0;
+
+  border-radius:8px;
+
+  background:#8a73df;
+
+  color:#fff;
+
+  padding:7px 9px;
+
+  font-size:10px;
+}
+
+.week-items{
+  max-height:100px;
+
+  overflow:auto;
+
+  margin-top:5px;
+}
+
+.week-item{
+  display:flex;
+
+  justify-content:space-between;
+
+  font-size:10px;
+
+  padding:5px 0;
+}
+
+/* =========================
+   D-Day
+========================= */
+
+.ddays{
+  flex:0 0 auto;
+}
+
+.dday-list{
+  max-height:150px;
+
+  overflow:auto;
+}
+
+.dday-item{
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  padding:8px 0;
+
+  border-bottom:1px solid var(--line);
+
+  font-size:11px;
+}
+
+.dday-item b{
+  font-size:13px;
+}
+
+.add-dday{
+  display:grid;
+
+  grid-template-columns:
+    1fr 115px auto;
+
+  gap:5px;
+
+  margin-top:8px;
+}
+
+.add-dday input{
+  border:1px solid var(--line);
+
+  border-radius:8px;
+
+  padding:7px;
+
+  font-size:10px;
+}
+
+.add-dday button{
+  border:0;
+
+  border-radius:8px;
+
+  background:#25232b;
+
+  color:#fff;
+
+  font-size:10px;
+
+  padding:0 10px;
+}
+
+.footer-note{
+  font-size:9px;
+
+  color:#aaa;
+
+  text-align:center;
+}
+
+/* =========================
+   모바일
+========================= */
+
+@media(max-width:1100px){
+
+  .app{
+    height:auto;
+
+    min-height:100vh;
+  }
+
+  .layout{
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .col:nth-child(2){
+    grid-column:1 / -1;
+
+    grid-row:2;
+  }
+
+  .col:nth-child(3){
+    grid-column:2;
+
+    grid-row:1;
+  }
+
+  .timeline-card{
+    min-height:430px;
+  }
+}
+
+@media(max-width:720px){
+
+  .topbar{
+    align-items:flex-start;
+
+    gap:10px;
+  }
+
+  .dday{
+    padding:9px;
+  }
+
+  .dday strong{
+    font-size:22px;
+  }
+
+  .layout{
+    display:flex;
+
+    flex-direction:column;
+  }
+
+  .col{
+    min-height:auto;
+  }
+
+  .calendar{
+    grid-auto-rows:58px;
+  }
+
+  .month-card{
+    min-height:420px;
+  }
+
+  .timeline-card{
+    min-height:430px;
+  }
 }
 </style>
 </head>
 
+
 <body>
 
-<div class="container">
+<div class="app">
 
-    <header class="header">
-        <div>
-            <h1>STUDY DASHBOARD</h1>
-            <p>수능까지 차근차근.</p>
-        </div>
-    </header>
+<!-- =========================
+     상단
+========================= -->
 
-    <!-- 수능 D-Day -->
-    <section class="dday-box">
-        <div>
-            <div class="dday-title">2027학년도 대학수학능력시험</div>
-            <div class="dday-number" id="csatDday">D-0</div>
-            <div class="dday-date">2026.11.19</div>
-        </div>
+<header class="topbar">
 
-        <div class="dday-right">
-            <div>오늘의 공부도 기록하기</div>
-            <button onclick="scrollToTimer()">공부 시작 →</button>
-        </div>
-    </section>
+  <div class="brand">
+
+    <h1>
+      STUDY DASHBOARD
+    </h1>
+
+    <p>
+      수능까지 오늘도 한 칸씩.
+    </p>
+
+  </div>
 
 
-    <div class="grid">
+  <div class="dday">
 
-        <!-- 왼쪽 -->
-        <div>
+    <div>
 
-            <!-- 달력 -->
-            <section class="card">
+      <div class="label">
+        2027학년도 대학수학능력시험
+      </div>
 
-                <div class="calendar-header">
-                    <button onclick="changeMonth(-1)">‹</button>
-                    <div class="calendar-title" id="calendarTitle"></div>
-                    <button onclick="changeMonth(1)">›</button>
-                </div>
-
-                <div class="weekdays">
-                    <div>일</div>
-                    <div>월</div>
-                    <div>화</div>
-                    <div>수</div>
-                    <div>목</div>
-                    <div>금</div>
-                    <div>토</div>
-                </div>
-
-                <div class="calendar" id="calendar"></div>
-
-            </section>
-
-
-            <!-- 선택 날짜 일정 -->
-            <section class="card">
-
-                <h2 id="selectedDateTitle">날짜를 선택하세요</h2>
-
-                <div class="event-form">
-                    <input
-                        id="eventInput"
-                        placeholder="예: 수학 미적분 문제집 30쪽"
-                    >
-                    <button onclick="addEvent()">추가</button>
-                </div>
-
-                <div id="eventList"></div>
-
-            </section>
-
-
-            <!-- 체크리스트 -->
-            <section class="card">
-
-                <h2>오늘의 체크리스트</h2>
-
-                <div class="check-input">
-                    <input
-                        id="checkInput"
-                        placeholder="오늘 할 일을 입력하세요"
-                    >
-                    <button onclick="addChecklist()">추가</button>
-                </div>
-
-                <div id="checkList"></div>
-
-            </section>
-
-        </div>
-
-
-        <!-- 오른쪽 -->
-        <div>
-
-            <!-- 타이머 -->
-            <section class="card timer" id="timerCard">
-
-                <h2>공부 타이머</h2>
-
-                <select id="subject" class="timer-subject">
-                    <option value="국어">국어</option>
-                    <option value="수학">수학</option>
-                    <option value="영어">영어</option>
-                    <option value="탐구">탐구</option>
-                    <option value="기타">기타</option>
-                </select>
-
-                <div class="timer-mode">
-                    <button
-                        id="studyMode"
-                        class="active"
-                        onclick="setMode('study')"
-                    >
-                        공부
-                    </button>
-
-                    <button
-                        id="breakMode"
-                        onclick="setMode('break')"
-                    >
-                        휴식
-                    </button>
-                </div>
-
-                <div class="time" id="timer">00:00:00</div>
-
-                <div class="timer-buttons">
-                    <button class="start" onclick="toggleTimer()" id="startButton">
-                        시작
-                    </button>
-
-                    <button class="reset" onclick="resetTimer()">
-                        리셋
-                    </button>
-                </div>
-
-            </section>
-
-
-            <!-- 오늘 공부 -->
-            <section class="card">
-
-                <h2>오늘 공부 기록</h2>
-
-                <div class="stat-main">
-                    <div>
-                        <div class="dday-title">오늘 공부한 시간</div>
-                        <div class="total-time" id="todayTotal">
-                            00:00
-                        </div>
-                    </div>
-                </div>
-
-                <div class="subject-stat" id="todaySubjects"></div>
-
-            </section>
-
-
-            <!-- 수능까지 총 공부 -->
-            <section class="card">
-
-                <h2>수능까지 총 공부</h2>
-
-                <div class="dday-title">
-                    지금까지 기록한 공부 시간
-                </div>
-
-                <div class="total-time" id="allTotal">
-                    00:00
-                </div>
-
-                <div class="subject-stat" id="allSubjects"></div>
-
-            </section>
-
-        </div>
+      <small>
+        2026.11.19
+      </small>
 
     </div>
+
+    <strong id="csat">
+      D-
+    </strong>
+
+  </div>
+
+</header>
+
+
+<!-- =========================
+     메인
+========================= -->
+
+<main class="layout">
+
+
+<!-- =========================
+     LEFT
+     타이머 + 통계
+========================= -->
+
+<section class="col">
+
+
+  <!-- 타이머 -->
+
+  <div
+    class="card timer-card"
+    id="timerCard"
+  >
+
+    <h2>
+      공부 타이머
+    </h2>
+
+
+    <select
+      class="subject"
+      id="subject"
+    >
+
+      <option>
+        국어
+      </option>
+
+      <option>
+        수학
+      </option>
+
+      <option>
+        영어
+      </option>
+
+      <option>
+        탐구
+      </option>
+
+      <option>
+        기타
+      </option>
+
+    </select>
+
+
+    <div
+      class="timer"
+      id="timer"
+    >
+      00:00:00
+    </div>
+
+
+    <div class="timer-btns">
+
+      <button
+        class="start"
+        id="startBtn"
+        onclick="toggleTimer()"
+      >
+        시작
+      </button>
+
+      <button
+        class="reset"
+        onclick="resetCurrentTimer()"
+      >
+        리셋
+      </button>
+
+    </div>
+
+
+    <div class="timer-note">
+
+      중지는 시간을 기록만 하고
+      0으로 돌아가지 않아요.<br>
+
+      리셋을 눌러야 현재 타이머가
+      초기화됩니다.
+
+    </div>
+
+  </div>
+
+
+  <!-- 공부시간 -->
+
+  <div class="card stats">
+
+    <h2>
+      오늘 공부 시간
+    </h2>
+
+
+    <div
+      class="stat-total"
+      id="todayTotal"
+    >
+      0시간 0분
+    </div>
+
+
+    <div id="todayStats"></div>
+
+
+    <hr
+      style="
+      border:0;
+      border-top:1px solid var(--line);
+      margin:14px 0;
+      "
+    >
+
+
+    <h2>
+      수능까지 누적
+    </h2>
+
+
+    <div
+      class="stat-total"
+      id="allTotal"
+    >
+      0시간 0분
+    </div>
+
+
+    <div id="allStats"></div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     CENTER
+     타임라인
+========================= -->
+
+<section class="col">
+
+  <div
+    class="card timeline-card"
+  >
+
+    <div class="timeline-head">
+
+      <div
+        class="date-big"
+        id="timelineDate"
+      >
+        오늘
+        <small></small>
+      </div>
+
+
+      <button
+        class="small-btn"
+        onclick="selectToday()"
+      >
+        오늘로
+      </button>
+
+    </div>
+
+
+    <div
+      class="timeline"
+      id="timeline"
+    ></div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     RIGHT
+     캘린더 + 일정
+========================= -->
+
+<section class="col">
+
+
+  <!-- 달력 -->
+
+  <div class="card month-card">
+
+    <div class="cal-head">
+
+      <button
+        onclick="moveMonth(-1)"
+      >
+        ‹
+      </button>
+
+
+      <div
+        class="month"
+        id="monthTitle"
+      ></div>
+
+
+      <button
+        onclick="moveMonth(1)"
+      >
+        ›
+      </button>
+
+    </div>
+
+
+    <div class="week">
+
+      <span>일</span>
+      <span>월</span>
+      <span>화</span>
+      <span>수</span>
+      <span>목</span>
+      <span>금</span>
+      <span>토</span>
+
+    </div>
+
+
+    <div
+      class="calendar"
+      id="calendar"
+    ></div>
+
+  </div>
+
+
+  <!-- 할 일 -->
+
+  <div class="card tasks-card">
+
+    <div
+      class="selected-title"
+      id="selectedTitle"
+    ></div>
+
+
+    <div class="task-form">
+
+      <input
+        id="taskInput"
+        placeholder="이 날짜에 할 일 추가"
+      >
+
+      <button
+        onclick="addDateTask()"
+      >
+        추가
+      </button>
+
+    </div>
+
+
+    <div
+      class="task-list"
+      id="taskList"
+    ></div>
+
+
+    <!-- 반복 일정 -->
+
+    <div class="weekly">
+
+      <div class="weekly-title">
+
+        <span>
+          요일별 반복 할 일
+        </span>
+
+        <span
+          style="
+          color:#aaa;
+          font-weight:500
+          "
+        >
+          선택 날짜에 자동 표시
+        </span>
+
+      </div>
+
+
+      <div
+        class="week-pills"
+        id="weekPills"
+      ></div>
+
+
+      <div class="weekly-form">
+
+        <input
+          id="weeklyInput"
+          placeholder="예: 영어 단어 100개"
+        >
+
+        <button
+          onclick="addWeeklyTask()"
+        >
+          요일에 추가
+        </button>
+
+      </div>
+
+
+      <div
+        class="week-items"
+        id="weekItems"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- 나의 D-Day -->
+
+  <div class="card ddays">
+
+    <h2>
+      나의 D-Day
+    </h2>
+
+
+    <div
+      class="dday-list"
+      id="ddayList"
+    ></div>
+
+
+    <div class="add-dday">
+
+      <input
+        id="ddayName"
+        placeholder="예: 9월 모의고사"
+      >
+
+      <input
+        id="ddayDate"
+        type="date"
+      >
+
+      <button
+        onclick="addDday()"
+      >
+        추가
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="footer-note">
+
+    모든 기록은 이 브라우저의
+    저장공간에 자동 저장됩니다.
+
+  </div>
+
+</section>
+
+</main>
 
 </div>
 
@@ -586,89 +1299,255 @@ button {
    기본 설정
 ========================= */
 
-const CSAT_DATE = new Date("2026-11-19T00:00:00");
+const CSAT =
+  "2026-11-19";
 
-const subjects = [
-    "국어",
-    "수학",
-    "영어",
-    "탐구",
-    "기타"
+
+const SUBJECTS = [
+  "국어",
+  "수학",
+  "영어",
+  "탐구",
+  "기타"
 ];
 
-let currentDate = new Date();
-currentDate.setDate(1);
 
-let selectedDate = getDateKey(new Date());
-
-let timerSeconds = 0;
-let timerRunning = false;
-let timerInterval = null;
-
-let timerMode = "study";
+const MONTHS = [
+  8,
+  9,
+  10,
+  11
+];
 
 
-/* =========================
-   저장 데이터
-========================= */
-
-let events = JSON.parse(
-    localStorage.getItem("studyEvents") || "{}"
-);
-
-let studyRecords = JSON.parse(
-    localStorage.getItem("studyRecords") || "{}"
-);
-
-let checklist = JSON.parse(
-    localStorage.getItem("studyChecklist") || "{}"
-);
+const DAY_NAMES = [
+  "일",
+  "월",
+  "화",
+  "수",
+  "목",
+  "금",
+  "토"
+];
 
 
-/* =========================
-   날짜 함수
-========================= */
+let selected =
+  key(new Date());
 
-function getDateKey(date) {
-    return date.getFullYear() + "-" +
-        String(date.getMonth() + 1).padStart(2, "0") + "-" +
-        String(date.getDate()).padStart(2, "0");
+
+let calDate =
+  new Date(
+    2026,
+    new Date().getMonth() >= 8 &&
+    new Date().getMonth() <= 11
+      ? new Date().getMonth()
+      : 8,
+    1
+  );
+
+
+if(
+  !MONTHS.includes(
+    calDate.getMonth()
+  )
+){
+  calDate =
+    new Date(2026,8,1);
 }
 
 
-function formatDate(dateKey) {
-    const [y, m, d] = dateKey.split("-");
+let weeklyDay =
+  new Date().getDay();
 
-    return `${y}.${m}.${d}`;
+
+/* =========================
+   데이터
+========================= */
+
+let dateTasks =
+  JSON.parse(
+    localStorage.getItem(
+      "csat_dateTasks"
+    ) || "{}"
+  );
+
+
+let weeklyTasks =
+  JSON.parse(
+    localStorage.getItem(
+      "csat_weeklyTasks"
+    ) ||
+    '{"0":[],"1":[],"2":[],"3":[],"4":[],"5":[],"6":[]}'
+  );
+
+
+let ddays =
+  JSON.parse(
+    localStorage.getItem(
+      "csat_ddays"
+    ) || "[]"
+  );
+
+
+let records =
+  JSON.parse(
+    localStorage.getItem(
+      "csat_records"
+    ) || "{}"
+  );
+
+
+/* =========================
+   타이머 상태
+========================= */
+
+let running =
+  false;
+
+let currentSeconds =
+  0;
+
+let timerId =
+  null;
+
+let startedAt =
+  null;
+
+let activeSubject =
+  "국어";
+
+
+/* =========================
+   저장
+========================= */
+
+function save(){
+
+  localStorage.setItem(
+    "csat_dateTasks",
+    JSON.stringify(dateTasks)
+  );
+
+  localStorage.setItem(
+    "csat_weeklyTasks",
+    JSON.stringify(weeklyTasks)
+  );
+
+  localStorage.setItem(
+    "csat_ddays",
+    JSON.stringify(ddays)
+  );
+
+  localStorage.setItem(
+    "csat_records",
+    JSON.stringify(records)
+  );
+
 }
 
 
 /* =========================
-   D-Day
+   날짜
 ========================= */
 
-function updateDday() {
+function key(d){
 
-    const today = new Date();
+  return d
+    .toISOString()
+    .slice(0,10);
 
-    today.setHours(0,0,0,0);
+}
 
-    const diff =
-        Math.ceil(
-            (CSAT_DATE - today) /
-            (1000 * 60 * 60 * 24)
-        );
 
-    const element =
-        document.getElementById("csatDday");
+function todayKey(){
 
-    if (diff > 0) {
-        element.textContent = `D-${diff}`;
-    } else if (diff === 0) {
-        element.textContent = "D-DAY";
-    } else {
-        element.textContent = `D+${Math.abs(diff)}`;
-    }
+  return key(
+    new Date()
+  );
+
+}
+
+
+function diffDays(a,b){
+
+  return Math.ceil(
+    (
+      new Date(a) -
+      new Date(b)
+    ) / 86400000
+  );
+
+}
+
+
+/* =========================
+   시간 포맷
+========================= */
+
+function fmt(sec){
+
+  sec =
+    Math.max(
+      0,
+      Math.floor(sec)
+    );
+
+
+  return `
+    ${Math.floor(sec / 3600)}시간
+    ${Math.floor((sec % 3600) / 60)}분
+  `;
+
+}
+
+
+function fmtClock(sec){
+
+  return [
+    Math.floor(sec / 3600),
+
+    Math.floor(
+      (sec % 3600) / 60
+    ),
+
+    sec % 60
+
+  ]
+
+  .map(
+    x =>
+      String(x)
+      .padStart(2,"0")
+  )
+
+  .join(":");
+
+}
+
+
+/* =========================
+   수능 D-Day
+========================= */
+
+function updateCsat(){
+
+  const d =
+    diffDays(
+      CSAT,
+      todayKey()
+    );
+
+
+  document.getElementById(
+    "csat"
+  ).textContent =
+
+    d > 0
+      ? `D-${d}`
+      : d === 0
+      ? "D-DAY"
+      : `D+${Math.abs(d)}`;
+
 }
 
 
@@ -676,336 +1555,664 @@ function updateDday() {
    달력
 ========================= */
 
-function renderCalendar() {
+function renderCalendar(){
 
-    const calendar =
-        document.getElementById("calendar");
+  const y =
+    calDate.getFullYear();
 
-    calendar.innerHTML = "";
+  const m =
+    calDate.getMonth();
 
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
 
-    document.getElementById("calendarTitle")
-        .textContent =
-        `${year}년 ${month + 1}월`;
+  document.getElementById(
+    "monthTitle"
+  ).textContent =
+    `${y}년 ${m+1}월`;
 
-    const firstDay =
-        new Date(year, month, 1).getDay();
 
-    const lastDate =
-        new Date(year, month + 1, 0).getDate();
+  const el =
+    document.getElementById(
+      "calendar"
+    );
 
-    for (let i = 0; i < firstDay; i++) {
 
-        const empty = document.createElement("div");
+  el.innerHTML = "";
 
-        empty.className = "day";
 
-        calendar.appendChild(empty);
+  const first =
+    new Date(
+      y,
+      m,
+      1
+    ).getDay();
+
+
+  const last =
+    new Date(
+      y,
+      m + 1,
+      0
+    ).getDate();
+
+
+  /* 빈 칸 */
+
+  for(
+    let i=0;
+    i<first;
+    i++
+  ){
+
+    const x =
+      document.createElement(
+        "div"
+      );
+
+    x.className =
+      "day empty";
+
+    el.appendChild(x);
+
+  }
+
+
+  /* 날짜 */
+
+  for(
+    let d=1;
+    d<=last;
+    d++
+  ){
+
+    const dt =
+      new Date(
+        y,
+        m,
+        d
+      );
+
+
+    const k =
+      key(dt);
+
+
+    const x =
+      document.createElement(
+        "div"
+      );
+
+
+    x.className =
+      "day";
+
+
+    if(
+      k === todayKey()
+    ){
+      x.classList.add(
+        "today"
+      );
     }
 
 
-    for (let day = 1; day <= lastDate; day++) {
+    if(
+      k === selected
+    ){
+      x.classList.add(
+        "selected"
+      );
+    }
 
-        const date =
-            new Date(year, month, day);
 
-        const key =
-            getDateKey(date);
+    x.innerHTML =
+      `<span class="day-num">
+        ${d}
+      </span>`;
 
-        const div =
-            document.createElement("div");
 
-        div.className = "day";
+    /* 수능 */
 
-        if (key === getDateKey(new Date())) {
-            div.classList.add("today");
+    if(
+      k === CSAT
+    ){
+
+      x.innerHTML +=
+        `
+        <span class="mini dday">
+          수능 D-DAY
+        </span>
+        `;
+
+    }
+
+
+    /* 일정 */
+
+    (
+      dateTasks[k] || []
+    )
+    .slice(0,2)
+    .forEach(t => {
+
+      x.innerHTML +=
+        `
+        <span class="mini">
+          ${esc(t.text)}
+        </span>
+        `;
+
+    });
+
+
+    /* 공부 시간 */
+
+    const study =
+      totalForDay(k);
+
+
+    if(
+      study > 0
+    ){
+
+      x.innerHTML +=
+        `
+        <span class="study-min">
+          ${Math.floor(study/60)}분
+        </span>
+        `;
+
+    }
+
+
+    x.onclick =
+      () => {
+
+        selected =
+          k;
+
+        renderAll();
+
+      };
+
+
+    el.appendChild(x);
+
+  }
+
+}
+
+
+/* =========================
+   월 이동
+========================= */
+
+function moveMonth(n){
+
+  let next =
+    calDate.getMonth() + n;
+
+
+  if(next < 8)
+    next = 8;
+
+
+  if(next > 11)
+    next = 11;
+
+
+  calDate =
+    new Date(
+      2026,
+      next,
+      1
+    );
+
+
+  renderCalendar();
+
+}
+
+
+/* =========================
+   오늘
+========================= */
+
+function selectToday(){
+
+  selected =
+    todayKey();
+
+
+  calDate =
+    new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      1
+    );
+
+
+  if(
+    !MONTHS.includes(
+      calDate.getMonth()
+    )
+  ){
+
+    calDate =
+      new Date(
+        2026,
+        8,
+        1
+      );
+
+  }
+
+
+  renderAll();
+
+}
+
+
+/* =========================
+   날짜별 할 일
+========================= */
+
+function renderTasks(){
+
+  const dt =
+    new Date(
+      selected +
+      "T00:00:00"
+    );
+
+
+  const day =
+    dt.getDay();
+
+
+  document.getElementById(
+    "selectedTitle"
+  ).textContent =
+    `${selected.replaceAll("-",".")}
+     · ${DAY_NAMES[day]}요일`;
+
+
+  const list =
+    document.getElementById(
+      "taskList"
+    );
+
+
+  list.innerHTML = "";
+
+
+  /* 반복 일정 */
+
+  const recurring =
+    (
+      weeklyTasks[day] || []
+    )
+    .map(
+      (t,i) => ({
+        ...t,
+        recurring:true,
+        ri:i
+      })
+    );
+
+
+  /* 해당 날짜 일정 */
+
+  const specific =
+    dateTasks[selected] || [];
+
+
+  if(
+    !recurring.length &&
+    !specific.length
+  ){
+
+    list.innerHTML =
+      `
+      <div
+        style="
+        color:#aaa;
+        font-size:11px;
+        padding:8px 0
+        "
+      >
+        등록된 할 일이 없어요.
+      </div>
+      `;
+
+  }
+
+
+  recurring.forEach(
+    t =>
+      addTaskEl(
+        list,
+        t,
+        t.ri,
+        true
+      )
+  );
+
+
+  specific.forEach(
+    (t,i) =>
+      addTaskEl(
+        list,
+        t,
+        i,
+        false
+      )
+  );
+
+
+  renderWeekly(day);
+
+}
+
+
+/* =========================
+   할 일 UI
+========================= */
+
+function addTaskEl(
+  list,
+  t,
+  i,
+  isWeekly
+){
+
+  const row =
+    document.createElement(
+      "div"
+    );
+
+
+  row.className =
+    "task";
+
+
+  row.innerHTML =
+    `
+    <input
+      type="checkbox"
+      ${t.done ? "checked" : ""}
+    >
+
+    <label
+      class="${t.done ? "done" : ""}"
+    >
+      ${esc(t.text)}
+
+      ${
+        isWeekly
+          ? '<span style="color:#aaa">(반복)</span>'
+          : ''
+      }
+
+    </label>
+
+    <button class="x">
+      ×
+    </button>
+    `;
+
+
+  row
+    .querySelector("input")
+    .onchange =
+      () => {
+
+        t.done =
+          !t.done;
+
+        save();
+
+        renderTasks();
+
+      };
+
+
+  row
+    .querySelector(".x")
+    .onclick =
+      () => {
+
+        if(isWeekly){
+
+          weeklyTasks[
+            new Date(
+              selected +
+              "T00:00:00"
+            ).getDay()
+          ].splice(
+            i,
+            1
+          );
+
+        }else{
+
+          dateTasks[
+            selected
+          ].splice(
+            i,
+            1
+          );
+
         }
 
-        if (key === selectedDate) {
-            div.classList.add("selected");
-        }
 
-        div.innerHTML =
-            `<div class="day-number">${day}</div>`;
+        save();
 
+        renderAll();
 
-        /* 수능 D-Day */
-
-        if (key === "2026-11-19") {
-
-            div.innerHTML +=
-                `<div class="event-dot dday-event">
-                    수능 D-DAY
-                </div>`;
-        }
+      };
 
 
-        /* 일정 표시 */
+  list.appendChild(row);
 
-        if (events[key]) {
-
-            events[key].forEach(event => {
-
-                const eventDiv =
-                    document.createElement("div");
-
-                eventDiv.className =
-                    "event-dot";
-
-                eventDiv.textContent =
-                    event.name;
-
-                div.appendChild(eventDiv);
-            });
-        }
+}
 
 
-        div.onclick = () => {
+/* =========================
+   날짜 일정 추가
+========================= */
 
-            selectedDate = key;
+function addDateTask(){
 
-            renderCalendar();
-            renderEvents();
-            renderChecklist();
+  const inp =
+    document.getElementById(
+      "taskInput"
+    );
+
+
+  const text =
+    inp.value.trim();
+
+
+  if(!text)
+    return;
+
+
+  (
+    dateTasks[selected] ??
+    (dateTasks[selected] = [])
+  )
+  .push({
+    text,
+    done:false
+  });
+
+
+  inp.value = "";
+
+
+  save();
+
+  renderAll();
+
+}
+
+
+/* =========================
+   요일별 일정
+========================= */
+
+function renderWeekly(day){
+
+  const p =
+    document.getElementById(
+      "weekPills"
+    );
+
+
+  p.innerHTML = "";
+
+
+  DAY_NAMES.forEach(
+    (n,i) => {
+
+      const b =
+        document.createElement(
+          "button"
+        );
+
+
+      b.textContent =
+        n;
+
+
+      b.className =
+        i === day
+          ? "active"
+          : "";
+
+
+      b.onclick =
+        () => {
+
+          weeklyDay =
+            i;
+
+          renderWeekly(i);
+
         };
 
-        calendar.appendChild(div);
+
+      p.appendChild(b);
+
     }
-}
+  );
 
 
-function changeMonth(amount) {
-
-    currentDate.setMonth(
-        currentDate.getMonth() + amount
-    );
-
-    renderCalendar();
-}
-
-
-/* =========================
-   일정
-========================= */
-
-function addEvent() {
-
-    const input =
-        document.getElementById("eventInput");
-
-    const name =
-        input.value.trim();
-
-    if (!name) return;
-
-    if (!events[selectedDate]) {
-        events[selectedDate] = [];
-    }
-
-    events[selectedDate].push({
-        name: name
-    });
-
-    localStorage.setItem(
-        "studyEvents",
-        JSON.stringify(events)
-    );
-
-    input.value = "";
-
-    renderCalendar();
-    renderEvents();
-}
-
-
-function deleteEvent(index) {
-
-    events[selectedDate].splice(index, 1);
-
-    if (events[selectedDate].length === 0) {
-        delete events[selectedDate];
-    }
-
-    localStorage.setItem(
-        "studyEvents",
-        JSON.stringify(events)
-    );
-
-    renderCalendar();
-    renderEvents();
-}
-
-
-function renderEvents() {
-
+  const box =
     document.getElementById(
-        "selectedDateTitle"
-    ).textContent =
-        `${formatDate(selectedDate)} 일정`;
-
-    const list =
-        document.getElementById("eventList");
-
-    list.innerHTML = "";
-
-    const dayEvents =
-        events[selectedDate] || [];
-
-    if (dayEvents.length === 0) {
-
-        list.innerHTML =
-            `<div style="color:#aaa">
-                등록된 일정이 없어요.
-            </div>`;
-
-        return;
-    }
+      "weekItems"
+    );
 
 
-    dayEvents.forEach((event, index) => {
+  box.innerHTML = "";
 
-        const div =
-            document.createElement("div");
 
-        div.className = "event-item";
+  (
+    weeklyTasks[weeklyDay] || []
+  )
+  .forEach(
+    (t,i) => {
 
-        div.innerHTML = `
-            <div class="event-info">
-                <div class="event-name">
-                    ${escapeHtml(event.name)}
-                </div>
-                <div class="event-date">
-                    ${formatDate(selectedDate)}
-                </div>
-            </div>
+      const r =
+        document.createElement(
+          "div"
+        );
 
-            <button
-                class="delete"
-                onclick="deleteEvent(${index})"
-            >
-                ×
-            </button>
+
+      r.className =
+        "week-item";
+
+
+      r.innerHTML =
+        `
+        <span>
+          • ${esc(t.text)}
+        </span>
+
+        <button
+          class="x"
+          style="font-size:13px"
+        >
+          ×
+        </button>
         `;
 
-        list.appendChild(div);
-    });
+
+      r
+        .querySelector("button")
+        .onclick =
+          () => {
+
+            weeklyTasks[
+              weeklyDay
+            ].splice(
+              i,
+              1
+            );
+
+
+            save();
+
+            renderAll();
+
+          };
+
+
+      box.appendChild(r);
+
+    }
+  );
+
 }
 
 
 /* =========================
-   체크리스트
+   요일 반복 일정 추가
 ========================= */
 
-function addChecklist() {
+function addWeeklyTask(){
 
-    const input =
-        document.getElementById("checkInput");
-
-    const text =
-        input.value.trim();
-
-    if (!text) return;
-
-    if (!checklist[selectedDate]) {
-        checklist[selectedDate] = [];
-    }
-
-    checklist[selectedDate].push({
-        text: text,
-        done: false
-    });
-
-    localStorage.setItem(
-        "studyChecklist",
-        JSON.stringify(checklist)
+  const inp =
+    document.getElementById(
+      "weeklyInput"
     );
 
-    input.value = "";
 
-    renderChecklist();
-}
-
-
-function toggleChecklist(index) {
-
-    checklist[selectedDate][index].done =
-        !checklist[selectedDate][index].done;
-
-    localStorage.setItem(
-        "studyChecklist",
-        JSON.stringify(checklist)
-    );
-
-    renderChecklist();
-}
+  const text =
+    inp.value.trim();
 
 
-function deleteChecklist(index) {
-
-    checklist[selectedDate].splice(index, 1);
-
-    localStorage.setItem(
-        "studyChecklist",
-        JSON.stringify(checklist)
-    );
-
-    renderChecklist();
-}
+  if(!text)
+    return;
 
 
-function renderChecklist() {
-
-    const list =
-        document.getElementById("checkList");
-
-    list.innerHTML = "";
-
-    const items =
-        checklist[selectedDate] || [];
-
-    if (items.length === 0) {
-
-        list.innerHTML =
-            `<div style="color:#aaa">
-                오늘 할 일을 추가해보세요.
-            </div>`;
-
-        return;
-    }
+  (
+    weeklyTasks[weeklyDay] ??
+    (weeklyTasks[weeklyDay] = [])
+  )
+  .push({
+    text,
+    done:false
+  });
 
 
-    items.forEach((item, index) => {
+  inp.value = "";
 
-        const div =
-            document.createElement("div");
 
-        div.className = "check-item";
+  save();
 
-        div.innerHTML = `
-            <input
-                type="checkbox"
-                ${item.done ? "checked" : ""}
-                onchange="toggleChecklist(${index})"
-            >
+  renderAll();
 
-            <label
-                class="${item.done ? "completed" : ""}"
-            >
-                ${escapeHtml(item.text)}
-            </label>
-
-            <button
-                class="delete"
-                onclick="deleteChecklist(${index})"
-            >
-                ×
-            </button>
-        `;
-
-        list.appendChild(div);
-    });
 }
 
 
@@ -1013,104 +2220,85 @@ function renderChecklist() {
    타이머
 ========================= */
 
-function setMode(mode) {
+function toggleTimer(){
 
-    timerMode = mode;
+  if(running){
 
-    document
-        .getElementById("studyMode")
-        .classList.toggle(
-            "active",
-            mode === "study"
-        );
+    /* 중지 */
 
-    document
-        .getElementById("breakMode")
-        .classList.toggle(
-            "active",
-            mode === "break"
-        );
-}
+    running =
+      false;
 
 
-function toggleTimer() {
-
-    if (timerRunning) {
-
-        stopTimer();
-
-    } else {
-
-        startTimer();
-    }
-}
+    clearInterval(
+      timerId
+    );
 
 
-function startTimer() {
+    const end =
+      new Date();
 
-    timerRunning = true;
+
+    saveSession(
+      startedAt,
+      end,
+      activeSubject
+    );
+
 
     document.getElementById(
-        "startButton"
-    ).textContent = "일시정지";
-
-
-    timerInterval =
-        setInterval(() => {
-
-            timerSeconds++;
-
-            updateTimerDisplay();
-
-        }, 1000);
-}
-
-
-function stopTimer() {
-
-    timerRunning = false;
-
-    clearInterval(timerInterval);
-
-    document.getElementById(
-        "startButton"
-    ).textContent = "시작";
-
-    saveTimerRecord();
-}
-
-
-function resetTimer() {
-
-    if (timerRunning) {
-        stopTimer();
-    }
-
-    timerSeconds = 0;
-
-    updateTimerDisplay();
-}
-
-
-function updateTimerDisplay() {
-
-    const hours =
-        Math.floor(timerSeconds / 3600);
-
-    const minutes =
-        Math.floor(
-            (timerSeconds % 3600) / 60
-        );
-
-    const seconds =
-        timerSeconds % 60;
-
-    document.getElementById(
-        "timer"
+      "startBtn"
     ).textContent =
-        `${String(hours).padStart(2,"0")}:` +
-        `${String(minutes).padStart(2,"0")}:` +
-        `${String(seconds).padStart(2,"0")}`;
+      "시작";
+
+
+  }else{
+
+    /* 시작 */
+
+    activeSubject =
+      document.getElementById(
+        "subject"
+      ).value;
+
+
+    startedAt =
+      new Date(
+        Date.now() -
+        currentSeconds * 1000
+      );
+
+
+    running =
+      true;
+
+
+    document.getElementById(
+      "startBtn"
+    ).textContent =
+      "중지";
+
+
+    timerId =
+      setInterval(
+        () => {
+
+          currentSeconds++;
+
+
+          document.getElementById(
+            "timer"
+          ).textContent =
+            fmtClock(
+              currentSeconds
+            );
+
+        },
+        1000
+      );
+
+  }
+
 }
 
 
@@ -1118,206 +2306,741 @@ function updateTimerDisplay() {
    공부 기록 저장
 ========================= */
 
-function saveTimerRecord() {
+function saveSession(
+  start,
+  end,
+  subject
+){
 
-    if (timerSeconds <= 0) return;
-
-    if (timerMode !== "study") {
-
-        timerSeconds = 0;
-
-        return;
-    }
-
-    const subject =
-        document.getElementById("subject").value;
-
-    const today =
-        getDateKey(new Date());
-
-    if (!studyRecords[today]) {
-
-        studyRecords[today] = {};
-
-        subjects.forEach(s => {
-            studyRecords[today][s] = 0;
-        });
-    }
-
-    studyRecords[today][subject] +=
-        timerSeconds;
-
-    localStorage.setItem(
-        "studyRecords",
-        JSON.stringify(studyRecords)
+  const duration =
+    Math.max(
+      1,
+      Math.round(
+        (end - start) / 1000
+      )
     );
 
-    timerSeconds = 0;
 
-    updateTimerDisplay();
+  const day =
+    key(start);
 
-    renderStats();
+
+  (
+    records[day] ??
+    (records[day] = [])
+  )
+  .push({
+
+    start:
+      start.toISOString(),
+
+    end:
+      end.toISOString(),
+
+    duration,
+
+    subject
+
+  });
+
+
+  save();
+
+
+  renderAll();
+
 }
 
 
 /* =========================
-   통계
+   현재 타이머 리셋
 ========================= */
 
-function formatSeconds(seconds) {
+function resetCurrentTimer(){
 
-    const hours =
-        Math.floor(seconds / 3600);
+  /*
+    실행 중이었다면
+    먼저 지금까지 시간을 저장
+  */
 
-    const minutes =
-        Math.floor(
-            (seconds % 3600) / 60
-        );
+  if(running){
 
-    return `${hours}시간 ${minutes}분`;
-}
-
-
-function renderStats() {
-
-    const today =
-        getDateKey(new Date());
-
-    let todayTotal = 0;
-
-    let allTotal = 0;
-
-    const todayData =
-        studyRecords[today] || {};
+    running =
+      false;
 
 
-    subjects.forEach(subject => {
-
-        todayTotal +=
-            todayData[subject] || 0;
-    });
-
-
-    Object.values(studyRecords)
-        .forEach(day => {
-
-            subjects.forEach(subject => {
-
-                allTotal +=
-                    day[subject] || 0;
-            });
-        });
-
-
-    document.getElementById(
-        "todayTotal"
-    ).textContent =
-        formatSeconds(todayTotal);
-
-    document.getElementById(
-        "allTotal"
-    ).textContent =
-        formatSeconds(allTotal);
-
-
-    renderSubjectStats(
-        "todaySubjects",
-        todayData,
-        todayTotal
+    clearInterval(
+      timerId
     );
 
 
-    const allData = {};
-
-    subjects.forEach(subject => {
-
-        allData[subject] = 0;
-
-        Object.values(studyRecords)
-            .forEach(day => {
-
-                allData[subject] +=
-                    day[subject] || 0;
-            });
-    });
-
-
-    renderSubjectStats(
-        "allSubjects",
-        allData,
-        allTotal
+    saveSession(
+      startedAt,
+      new Date(),
+      activeSubject
     );
+
+
+    document.getElementById(
+      "startBtn"
+    ).textContent =
+      "시작";
+
+  }
+
+
+  currentSeconds =
+    0;
+
+
+  document.getElementById(
+    "timer"
+  ).textContent =
+    "00:00:00";
+
 }
 
 
-function renderSubjectStats(
-    elementId,
-    data,
-    total
-) {
+/* =========================
+   전체 공부 기록
+========================= */
 
-    const container =
-        document.getElementById(elementId);
+function allSessions(){
 
-    container.innerHTML = "";
+  return Object
+    .values(records)
+    .flat();
 
-    subjects.forEach(subject => {
+}
 
-        const value =
-            data[subject] || 0;
 
-        const percent =
-            total > 0
-                ? (value / total) * 100
-                : 0;
+function totalForDay(k){
 
-        const row =
-            document.createElement("div");
+  return (
+    records[k] || []
+  )
+  .reduce(
+    (s,x) =>
+      s + x.duration,
+    0
+  );
 
-        row.className =
-            "subject-row";
+}
 
-        row.innerHTML = `
-            <div class="subject-name">
-                <span>${subject}</span>
-                <span>${formatSeconds(value)}</span>
-            </div>
 
-            <div class="bar">
-                <div
-                    class="bar-inner"
-                    style="width:${percent}%"
-                ></div>
-            </div>
+/* =========================
+   과목별 시간
+========================= */
+
+function subjectTotals(
+  dayKey=null
+){
+
+  const out =
+    Object.fromEntries(
+      SUBJECTS.map(
+        s => [s,0]
+      )
+    );
+
+
+  const arr =
+    dayKey
+      ? records[dayKey] || []
+      : allSessions();
+
+
+  arr.forEach(
+    x => {
+
+      out[x.subject] =
+        (out[x.subject] || 0)
+        + x.duration;
+
+    }
+  );
+
+
+  return out;
+
+}
+
+
+/* =========================
+   통계 렌더링
+========================= */
+
+function renderStats(){
+
+  const today =
+    subjectTotals(
+      todayKey()
+    );
+
+
+  const all =
+    subjectTotals();
+
+
+  const tt =
+    Object
+      .values(today)
+      .reduce(
+        (a,b) => a+b,
+        0
+      );
+
+
+  const at =
+    Object
+      .values(all)
+      .reduce(
+        (a,b) => a+b,
+        0
+      );
+
+
+  document.getElementById(
+    "todayTotal"
+  ).textContent =
+    fmt(tt);
+
+
+  document.getElementById(
+    "allTotal"
+  ).textContent =
+    fmt(at);
+
+
+  renderBars(
+    "todayStats",
+    today,
+    tt
+  );
+
+
+  renderBars(
+    "allStats",
+    all,
+    at
+  );
+
+}
+
+
+/* =========================
+   과목 그래프
+========================= */
+
+function renderBars(
+  id,
+  data,
+  total
+){
+
+  const el =
+    document.getElementById(id);
+
+
+  el.innerHTML = "";
+
+
+  SUBJECTS.forEach(
+    s => {
+
+      const v =
+        data[s] || 0;
+
+
+      const p =
+        total
+          ? v / total * 100
+          : 0;
+
+
+      el.innerHTML +=
+        `
+        <div class="subject-row">
+
+          <div class="subject-head">
+
+            <span>
+              ${s}
+            </span>
+
+            <span>
+              ${fmt(v)}
+            </span>
+
+          </div>
+
+
+          <div class="bar">
+
+            <i
+              style="
+              width:${p}%
+              "
+            ></i>
+
+          </div>
+
+        </div>
         `;
 
-        container.appendChild(row);
-    });
+    }
+  );
+
 }
 
 
 /* =========================
-   기타
+   하루 타임라인
 ========================= */
 
-function scrollToTimer() {
+function renderTimeline(){
 
+  const day =
+    selected;
+
+
+  const arr =
+    (
+      records[day] || []
+    )
+    .slice()
+    .sort(
+      (a,b) =>
+        new Date(a.start) -
+        new Date(b.start)
+    );
+
+
+  document.getElementById(
+    "timelineDate"
+  ).innerHTML =
+    `
+    ${day.replaceAll("-",".")}
+    <small>
+      ${day === todayKey()
+        ? "오늘"
+        : ""}
+    </small>
+    `;
+
+
+  const el =
     document.getElementById(
-        "timerCard"
-    ).scrollIntoView({
-        behavior: "smooth"
-    });
+      "timeline"
+    );
+
+
+  el.innerHTML = "";
+
+
+  if(!arr.length){
+
+    el.innerHTML =
+      `
+      <div
+        class="empty-timeline"
+      >
+        이 날짜의 공부 기록이
+        아직 없어요.
+      </div>
+      `;
+
+    return;
+
+  }
+
+
+  /*
+    24시간 표시
+  */
+
+  for(
+    let h=0;
+    h<24;
+    h++
+  ){
+
+    const row =
+      document.createElement(
+        "div"
+      );
+
+
+    row.className =
+      "timeline-row";
+
+
+    row.innerHTML =
+      `
+      <div class="t-label">
+        ${String(h).padStart(2,"0")}:00
+      </div>
+
+      <div class="track"></div>
+      `;
+
+
+    const track =
+      row.querySelector(
+        ".track"
+      );
+
+
+    arr
+      .filter(
+        s => {
+
+          const d =
+            new Date(
+              s.start
+            );
+
+
+          const e =
+            new Date(
+              s.end
+            );
+
+
+          return (
+            d.getHours() === h ||
+
+            (
+              e.getHours() === h &&
+              e.getDate() ===
+              d.getDate()
+            )
+          );
+
+        }
+      )
+      .forEach(
+        s => {
+
+          const st =
+            new Date(
+              s.start
+            );
+
+
+          const en =
+            new Date(
+              s.end
+            );
+
+
+          let startMin =
+            st.getHours()*60 +
+            st.getMinutes() +
+            st.getSeconds()/60;
+
+
+          let endMin =
+            en.getHours()*60 +
+            en.getMinutes() +
+            en.getSeconds()/60;
+
+
+          if(
+            endMin <= startMin
+          ){
+
+            endMin =
+              startMin +
+              s.duration/60;
+
+          }
+
+
+          if(
+            st.getHours() !== h
+          ){
+
+            startMin =
+              h*60;
+
+          }
+
+
+          if(
+            en.getHours() !== h
+          ){
+
+            endMin =
+              (h+1)*60;
+
+          }
+
+
+          const block =
+            document.createElement(
+              "div"
+            );
+
+
+          block.className =
+            "session";
+
+
+          block.style.left =
+            (
+              (startMin-h*60)
+              /60*100
+            ) + "%";
+
+
+          block.style.width =
+            Math.max(
+              .8,
+              (endMin-startMin)
+              /60*100
+            ) + "%";
+
+
+          block.textContent =
+            `${s.subject} · ${fmtShort(
+              s.duration
+            )}`;
+
+
+          track.appendChild(
+            block
+          );
+
+        }
+      );
+
+
+    el.appendChild(
+      row
+    );
+
+  }
+
 }
 
 
-function escapeHtml(text) {
+/* =========================
+   짧은 시간
+========================= */
 
-    const div =
-        document.createElement("div");
+function fmtShort(s){
 
-    div.textContent = text;
+  return `
+    ${Math.floor(s/60)}분
+  `;
 
-    return div.innerHTML;
+}
+
+
+/* =========================
+   나의 D-Day
+========================= */
+
+function renderDdys(){
+
+  const el =
+    document.getElementById(
+      "ddayList"
+    );
+
+
+  el.innerHTML = "";
+
+
+  const list = [
+
+    {
+      name:"수능",
+      date:CSAT,
+      locked:true
+    },
+
+    ...ddays
+
+  ]
+  .sort(
+    (a,b) =>
+      a.date.localeCompare(
+        b.date
+      )
+  );
+
+
+  list.forEach(
+    d => {
+
+      const n =
+        diffDays(
+          d.date,
+          todayKey()
+        );
+
+
+      const row =
+        document.createElement(
+          "div"
+        );
+
+
+      row.className =
+        "dday-item";
+
+
+      row.innerHTML =
+        `
+        <span>
+
+          ${esc(d.name)}
+
+          <small
+            style="
+            color:#aaa
+            "
+          >
+            ${d.date.replaceAll(
+              "-",
+              "."
+            )}
+          </small>
+
+        </span>
+
+
+        <b>
+
+          ${
+            n > 0
+              ? "D-"+n
+              : n === 0
+              ? "D-DAY"
+              : "D+"+
+                Math.abs(n)
+          }
+
+        </b>
+
+
+        ${
+          d.locked
+            ? ""
+            : `
+              <button
+                class="x"
+              >
+                ×
+              </button>
+            `
+        }
+
+        `;
+
+
+      if(!d.locked){
+
+        row
+          .querySelector(
+            "button"
+          )
+          .onclick =
+            () => {
+
+              ddays.splice(
+                ddays.indexOf(d),
+                1
+              );
+
+
+              save();
+
+              renderAll();
+
+            };
+
+      }
+
+
+      el.appendChild(
+        row
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================
+   D-Day 추가
+========================= */
+
+function addDday(){
+
+  const n =
+    document.getElementById(
+      "ddayName"
+    );
+
+
+  const d =
+    document.getElementById(
+      "ddayDate"
+    );
+
+
+  if(
+    !n.value.trim() ||
+    !d.value
+  )
+    return;
+
+
+  ddays.push({
+
+    name:
+      n.value.trim(),
+
+    date:
+      d.value
+
+  });
+
+
+  n.value = "";
+
+  d.value = "";
+
+
+  save();
+
+  renderAll();
+
+}
+
+
+/* =========================
+   HTML escape
+========================= */
+
+function esc(s){
+
+  const d =
+    document.createElement(
+      "div"
+    );
+
+
+  d.textContent =
+    s;
+
+
+  return d.innerHTML;
+
 }
 
 
@@ -1325,19 +3048,26 @@ function escapeHtml(text) {
    시작
 ========================= */
 
-updateDday();
+document
+  .getElementById(
+    "subject"
+  )
+  .addEventListener(
+    "change",
+    e => {
 
-renderCalendar();
+      activeSubject =
+        e.target.value;
 
-renderEvents();
+    }
+  );
 
-renderChecklist();
 
-renderStats();
+updateCsat();
 
-updateTimerDisplay();
+renderAll();
 
 </script>
 
 </body>
-  </html>
+</html>
